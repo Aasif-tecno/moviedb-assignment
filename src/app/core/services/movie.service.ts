@@ -19,7 +19,7 @@ export class MovieDBService {
     let queryParams = this.appSettingsService.queryStringFormat(params);
     return this.http
       .get(
-        `${params.query ? 'search' : 'discover'}/movie/?${queryParams}`,
+        `${params.query ? 'search' : 'discover'}/movie?${queryParams}`,
         httpOptions
       )
       .pipe(

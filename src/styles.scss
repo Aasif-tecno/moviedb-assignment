@@ -214,8 +214,9 @@ nav .search-icon {
   background-color: #171c24;
   border-radius: 999em;
 }
-input {
-  width: 30%;
+.search-input {
+  // width: 30%;
+  min-width: 350px;
   padding: 12px 24px;
 
   background-color: transparent;
@@ -230,7 +231,7 @@ input {
   background-repeat: no-repeat;
   background-size: 18px 18px;
   background-position: 95% center;
-  border-radius: 50px;
+  border-radius: 10px;
   border: 1px solid #171c24;
   transition: all 250ms ease-in-out;
   backface-visibility: hidden;
@@ -252,6 +253,27 @@ input {
     background-position: 100% center;
   }
 }
+.sort-select {
+  padding: 12px 24px;
+
+  background-color: transparent;
+  transition: transform 250ms ease-in-out;
+  font-size: 14px;
+  line-height: 18px;
+
+  color: #171c24;
+  background-color: transparent;
+  border-radius: 10px;
+  border: 1px solid #171c24;
+  backface-visibility: hidden;
+
+  &::placeholder {
+    color: color(#171c24 a(0.8));
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+}
+
 /******* Middle section CSS Start ******/
 /* -------- Landing page ------- */
 .movie-section {
@@ -261,6 +283,10 @@ input {
     align-items: center;
     justify-content: space-between;
     margin: auto 10px;
+    .filter-form {
+      display: flex;
+      gap: 10px;
+    }
   }
   .movie-list {
     display: grid;
@@ -385,9 +411,9 @@ input {
     width: 260px;
     height: 360px;
   }
-  .movie-section .item:hover {
-    // width: 400px;
-  }
+  // .movie-section .item:hover {
+  //   width: 400px;
+  // }
   .movie-section .item-desc {
     transform: translateY(calc(100% - 46px));
     -webkit-transform: translateY(calc(100% - 46px));
@@ -459,5 +485,27 @@ input {
     padding: 0 14px 5px;
     transform: translateY(calc(100% - 42px));
     -webkit-transform: translateY(calc(100% - 42px));
+  }
+}
+.skeleton {
+  opacity: 0.7;
+  animation: skeleton-loading 1s linear infinite alternate;
+}
+.skeleton-text {
+  width: 100%;
+  height: 0.5em;
+  border-radius: 0.125rem;
+  margin-bottom: 0.25rem;
+  &:last-child {
+    width: 80%;
+  }
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-color: hsl(200, 20%, 70%);
+  }
+  100% {
+    background-color: hsl(200, 20%, 95%);
   }
 }

@@ -14,7 +14,7 @@ import { Checklist } from 'src/app/shared/interfaces/checklist';
       [ngStyle]="{ 'background-image': 'url(' + movie.poster_path + ')' }"
     >
       <div class="rating">
-        {{ movie.vote_average }}
+        {{ +movie.vote_average | number : '1.1-1' }}
       </div>
       <div class="item-desc">
         <div class="info">
