@@ -1,6 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, from, Observable, of, switchMap, throwError } from 'rxjs';
+import {
+  catchError,
+  from,
+  map,
+  Observable,
+  of,
+  switchMap,
+  throwError,
+} from 'rxjs';
+import { StorageService } from './storage.service';
+import { User } from 'src/app/shared/interfaces/user';
 // import { environment } from 'environments/environment';
 
 @Injectable({
@@ -11,14 +21,15 @@ export class AuthService {
   /**
    * Constructor
    */
-  constructor(private _httpClient: HttpClient) {}
-
-  async getLogedUser() {
-    // const user = (await this.supabase.auth.getUser()).data;
-    // const session = (await this.supabase.auth.getSession()).data;
-    // if (user) {
-    // this._userService.user = user?.user;
-    // }
+  constructor(
+    private _httpClient: HttpClient,
+    private _storage: StorageService
+  ) {
+    if (this._storage.authenticated) {
+      const user = this._storage.getLoggedUser();
+      console.log('LOggedUser', user, this._storage.authenticated);
+      this._authenticated = true;
+    }
   }
 
   // -----------------------------------------------------------------------------------------------------
@@ -28,35 +39,17 @@ export class AuthService {
   /**
    * Setter & getter for access token
    */
-  set accessToken(token: string) {
-    localStorage.setItem('accessToken', token);
+  set user(user: User) {
+    this._storage.logInUser(user);
   }
 
-  get accessToken(): string {
-    return localStorage.getItem('accessToken') ?? '';
+  get user(): User {
+    return this._storage.getLoggedUser();
   }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Public methods
   // -----------------------------------------------------------------------------------------------------
-
-  /**
-   * Forgot password
-   *
-   * @param email
-   */
-  forgotPassword(email: string): Observable<any> {
-    return this._httpClient.post('api/auth/forgot-password', email);
-  }
-
-  /**
-   * Reset password
-   *
-   * @param password
-   */
-  resetPassword(password: string): Observable<any> {
-    return this._httpClient.post('api/auth/reset-password', password);
-  }
 
   /**
    * Sign in
@@ -67,22 +60,21 @@ export class AuthService {
     if (this._authenticated) {
       return throwError('User is already logged in.');
     }
-    // return from(this.supabase.auth.signUp(credentials)).pipe(
-    //   switchMap((response: any) => {
-    //     console.log('loginResp', response);
-    //     if (response.error) {
-    //       return throwError(response.error.message);
-    //     }
-    //     // this.accessToken = response.data.user.id;
+    return this._storage.getUser().pipe(
+      switchMap((data: User[]) => {
+        let existingUser = data.find((i) => i.email === credentials.email);
+        if (!existingUser) {
+          return throwError('User not found');
+        }
+        if (existingUser.password !== credentials.password) {
+          return throwError('Password does not match');
+        }
+        this._storage.authenticated = true;
+        this.user = existingUser;
 
-    //     // this._authenticated = true;
-
-    //     // this._userService.user = response.data.user;
-
-    //     // Return a new observable with the response
-    return of();
-    //   })
-    // );
+        return of(existingUser);
+      })
+    );
   }
 
   /**
@@ -90,10 +82,10 @@ export class AuthService {
    */
   signOut(): Observable<any> {
     // Remove the access token from the local storage
-    localStorage.removeItem('accessToken');
-
-    // Set the authenticated flag to false
+    this._storage.removeUser();
     this._authenticated = false;
+    this.user = {} as User;
+    // Set the authenticated flag to false
 
     // Return the observable
     return of(true);
@@ -108,21 +100,19 @@ export class AuthService {
     name: string;
     email: string;
     password: string;
-    company: string;
   }): Observable<any> {
-    return this._httpClient.post('api/auth/sign-up', user);
-  }
+    return this._storage.getUser().pipe(
+      switchMap((data: User[]) => {
+        let existingUser = data.find((i) => i.email === user.email);
+        if (existingUser) {
+          return throwError('Email already exist');
+        }
 
-  /**
-   * Unlock session
-   *
-   * @param credentials
-   */
-  unlockSession(credentials: {
-    email: string;
-    password: string;
-  }): Observable<any> {
-    return this._httpClient.post('api/auth/unlock-session', credentials);
+        return this._storage.addUser(user);
+      })
+    );
+    // .subscribe((users) => {
+    // });
   }
 
   /**
@@ -130,16 +120,11 @@ export class AuthService {
    */
   check(): Observable<boolean> {
     // Check if the user is logged in
-    if (this._authenticated) {
+    if (this._storage.authenticated) {
       return of(true);
     }
 
-    // Check the access token availability
-    if (!this.accessToken) {
-      return of(false);
-    }
-
     // If the access token exists and it didn't expire, sign in using it
-    return of(true);
+    return of(false);
   }
 }

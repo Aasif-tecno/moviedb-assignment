@@ -5,7 +5,7 @@ import NavComponent from './ui/nav.component';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { MovieDBService } from '../core/services/movie.service';
 import { InfiniteScrollComponent } from '../shared/infinit.component';
-import { BehaviorSubject, combineLatest } from 'rxjs';
+import { BehaviorSubject, Subscription, combineLatest } from 'rxjs';
 import {
   distinctUntilChanged,
   mergeMap,
@@ -81,10 +81,11 @@ export default class HomeComponent {
     sort$: new BehaviorSubject('popularity.desc'),
   };
   loading = true;
+  sub!: Subscription;
   constructor() {}
 
   ngOnInit(): void {
-    combineLatest([
+    this.sub = combineLatest([
       this.filters.paginator$.pipe(startWith(1), distinctUntilChanged()),
       this.filters.query$.pipe(
         startWith(''),
@@ -115,6 +116,7 @@ export default class HomeComponent {
       .subscribe((params) => {
         this.movieService.getMovies(params).subscribe((resp) => {
           this.loading = false;
+
           this.movieList = [...this.movieList, ...resp.results];
           this.totalPage = resp.total_pages;
         });
@@ -147,5 +149,9 @@ export default class HomeComponent {
    */
   filterByQuery(query: string): void {
     this.filters.query$.next(query);
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 }

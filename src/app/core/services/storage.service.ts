@@ -1,7 +1,6 @@
 import { inject, Injectable, InjectionToken, PLATFORM_ID } from '@angular/core';
 import { of } from 'rxjs';
-import { Checklist } from '../../shared/interfaces/checklist';
-import { ChecklistItem } from '../../shared/interfaces/checklist-item';
+import { User } from '../../shared/interfaces/user';
 
 export const LOCAL_STORAGE = new InjectionToken<Storage>(
   'window local storage object',
@@ -21,21 +20,53 @@ export const LOCAL_STORAGE = new InjectionToken<Storage>(
 export class StorageService {
   storage = inject(LOCAL_STORAGE);
 
-  loadChecklists() {
-    const checklists = this.storage.getItem('checklists');
-    return of(checklists ? (JSON.parse(checklists) as Checklist[]) : []);
+  constructor() {
+    const userList = this.storage.getItem('userList');
+    if (!userList) {
+      this.storage.setItem(
+        'userList',
+        JSON.stringify([
+          {
+            nae: 'Developer',
+            email: 'developer@yopmail.com',
+            password: '123456',
+          },
+        ])
+      );
+    }
   }
 
-  loadChecklistItems() {
-    const checklists = this.storage.getItem('checklistItems');
-    return of(checklists ? JSON.parse(checklists) : []);
+  getLoggedUser() {
+    const user = this.storage.getItem('loggedUser');
+    return user ? (JSON.parse(user) as User) : ({} as User);
   }
 
-  saveChecklists(checklists: Checklist[]) {
-    this.storage.setItem('checklists', JSON.stringify(checklists));
+  get authenticated() {
+    return this.storage.getItem('authenticated') ? true : false;
+  }
+  set authenticated(value: boolean) {
+    this.storage.setItem('authenticated', JSON.stringify(value));
+  }
+  logInUser(user: User) {
+    this.storage.setItem('loggedUser', JSON.stringify(user));
+    return user;
+  }
+  getUser() {
+    const userList = this.storage.getItem('userList');
+    return of(userList ? (JSON.parse(userList) as User[]) : []);
   }
 
-  saveChecklistItems(checklistItems: ChecklistItem[]) {
-    this.storage.setItem('checklistItems', JSON.stringify(checklistItems));
+  removeUser() {
+    this.storage.removeItem('loggedUser');
+    this.storage.removeItem('authenticated');
+  }
+
+  addUser(user: any) {
+    let userList = this.storage.getItem('userList');
+    userList = userList ? JSON.parse(userList) : [];
+    const data = userList && userList.length ? [...userList, user] : [user];
+    console.log('UserLst', userList);
+    this.storage.setItem('userList', JSON.stringify(data));
+    return of(user);
   }
 }

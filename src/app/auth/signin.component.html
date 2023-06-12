@@ -1,0 +1,117 @@
+<div class="login-page">
+  <div class="form">
+    <h2 class="section-title">Sign In</h2>
+    <div class="alert" [class]="alert.type" *ngIf="showAlert">
+      {{ alert.message }}
+    </div>
+    <ng-container *ngIf="showLoginForm">
+      <form class="login-form" [formGroup]="signInForm">
+        <input type="email" placeholder="Email" formControlName="email" />
+        <p
+          class="error-message"
+          *ngIf="
+            signInForm.get('email')?.touched &&
+            signInForm.get('email')?.hasError('required')
+          "
+        >
+          Please enter email address
+        </p>
+        <p
+          class="error-message"
+          *ngIf="
+            !signInForm.get('email')?.hasError('required') &&
+            signInForm.get('email')?.hasError('email')
+          "
+        >
+          Please enter valid email address
+        </p>
+        <input
+          type="password"
+          placeholder="password"
+          formControlName="password"
+        />
+        <p
+          class="error-message"
+          *ngIf="
+            signInForm.get('password')?.touched &&
+            signInForm.get('password')?.hasError('required')
+          "
+        >
+          Please enter password
+        </p>
+        <p
+          class="error-message"
+          *ngIf="signInForm.get('password')?.hasError('minLength')"
+        >
+          Password should be minimum 6 characters
+        </p>
+        <button type="submit" (click)="onSignIn()">SUBMIT</button>
+        <p class="message">
+          Don't have an account?
+          <span (click)="onToggleForm()">Sign Up</span>
+          here.
+        </p>
+      </form>
+    </ng-container>
+    <form
+      class="register-form"
+      *ngIf="!showLoginForm"
+      [formGroup]="registerForm"
+    >
+      <input type="text" placeholder="name" formControlName="name" />
+      <p
+        class="error-message"
+        *ngIf="
+          registerForm.get('name')?.touched &&
+          registerForm.get('name')?.hasError('required')
+        "
+      >
+        Please enter you name
+      </p>
+      <input type="email" placeholder="email" formControlName="email" />
+      <p
+        class="error-message"
+        *ngIf="
+          registerForm.get('email')?.touched &&
+          registerForm.get('email')?.hasError('required')
+        "
+      >
+        Please enter email address
+      </p>
+      <p
+        class="error-message"
+        *ngIf="
+          !registerForm.get('email')?.hasError('required') &&
+          registerForm.get('email')?.hasError('email')
+        "
+      >
+        Please enter valid email address
+      </p>
+      <input
+        type="password"
+        placeholder="password"
+        formControlName="password"
+      />
+      <p
+        class="error-message"
+        *ngIf="
+          registerForm.get('password')?.touched &&
+          registerForm.get('password')?.hasError('required')
+        "
+      >
+        Please enter password
+      </p>
+      <p
+        class="error-message"
+        *ngIf="registerForm.get('password')?.hasError('minLength')"
+      >
+        Password should be minimum 6 characters
+      </p>
+      <button (click)="onRegister()">CREATE</button>
+      <p class="message">
+        Already registered?
+        <span (click)="onToggleForm()">Sign In</span>
+      </p>
+    </form>
+  </div>
+</div>

@@ -6,7 +6,6 @@ import {
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { Checklist } from 'src/app/shared/interfaces/checklist';
 import { environment } from 'src/environments/environment.prod';
 
 @Component({
@@ -46,8 +45,4 @@ export class MovieCardComponent {
   @Input() movie!: any;
 
   constructor() {}
-
-  trackByFn(index: number, checklist: Checklist) {
-    return checklist.id;
-  }
 }
