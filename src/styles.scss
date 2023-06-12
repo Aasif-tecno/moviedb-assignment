@@ -8,12 +8,14 @@
 }
 body {
   background: #f2f2f2;
-  // background-image: url(images/bg-2.jpg);
-  background-size: cover;
-  background-position: center;
+  // background-size: cover;
+  // background-position: center;
   min-height: 450px;
   height: 100vh;
 }
+
+/******* Header section CSS Start ******/
+/* -------- Navbar ------- */
 nav {
   background: #171c24;
   display: flex;
@@ -295,10 +297,9 @@ nav .search-icon {
     .item {
       display: -ms-grid;
       display: grid;
-
       margin: 10px 0px;
-      width: 280px;
-      height: 400px;
+      width: 270px;
+      height: 405px;
       // display: flex;
       // display: -webkit-flex;
       align-items: flex-end;
@@ -313,6 +314,11 @@ nav .search-icon {
       transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s;
       -webkit-transition: all 0.25s ease-in-out;
       cursor: pointer;
+      .movie-poster {
+        position: absolute;
+        width: 100%;
+        object-fit: cover;
+      }
       .rating {
         position: absolute;
         top: 10px;
@@ -398,11 +404,10 @@ nav .search-icon {
   }
   h3 {
     margin: 0 0 8px;
-    font-size: 24px;
-    line-height: 32px;
+    font-size: 19px;
+    line-height: 24px;
   }
 
-  /* -------- Landing page ------- */
   .movie-section {
     padding: 50px 30px;
   }
@@ -426,8 +431,8 @@ nav .search-icon {
   }
   h3 {
     margin: 0 0 8px;
-    font-size: 24px;
-    line-height: 32px;
+    font-size: 19px;
+    line-height: 24px;
   }
   .section-title {
     width: 330px;
@@ -442,9 +447,9 @@ nav .search-icon {
     width: 240px;
     height: 330px;
   }
-  .movie-section .item:hover {
-    width: 360px;
-  }
+  // .movie-section .item:hover {
+  //   width: 360px;
+  // }
   .movie-section .item-desc {
     transform: translateY(calc(100% - 42px));
     -webkit-transform: translateY(calc(100% - 42px));

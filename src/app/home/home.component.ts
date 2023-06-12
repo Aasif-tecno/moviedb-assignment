@@ -2,7 +2,7 @@ import { Component, effect, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { MovieCardComponent } from './ui/movie-card.component';
 import NavComponent from './ui/nav.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { MovieDBService } from '../core/services/movie.service';
 import { InfiniteScrollComponent } from '../shared/infinit.component';
 import { BehaviorSubject, combineLatest } from 'rxjs';
@@ -38,17 +38,6 @@ import {
             #query
             placeholder="Search"
           />
-          <!-- <div class="select">
-            <select class="select-text" required>
-              <option value="" disabled selected></option>
-              <option value="1">Option 1</option>
-              <option value="2">Option 2</option>
-              <option value="3">Option 3</option>
-            </select>
-            <span class="select-highlight"></span>
-            <span class="select-bar"></span>
-            <label class="select-label">Select</label>
-          </div> -->
           <select
             name="sortby"
             class="sort-select"
@@ -81,7 +70,6 @@ import {
 export default class HomeComponent {
   movieService = inject(MovieDBService);
   movieList: any = [];
-  pageIndex = 1;
   totalPage = 0;
   filters: {
     paginator$: BehaviorSubject<number>;
@@ -125,7 +113,6 @@ export default class HomeComponent {
         })
       )
       .subscribe((params) => {
-        console.log('movies', params);
         this.movieService.getMovies(params).subscribe((resp) => {
           this.loading = false;
           this.movieList = [...this.movieList, ...resp.results];

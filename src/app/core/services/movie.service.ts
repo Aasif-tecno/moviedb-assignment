@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from 'src/environments/environment.prod';
-import { AppSettingsService } from './appSettings.service';
+import { AppSettingsService } from './app-settings.service';
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
 };
@@ -24,11 +24,6 @@ export class MovieDBService {
       )
       .pipe(
         map((resp: any) => {
-          if (resp && resp.results && Array.isArray(resp.results)) {
-            for (const item of resp.results) {
-              item.poster_path = environment.imagePath + item.poster_path;
-            }
-          }
           return resp;
         })
       );

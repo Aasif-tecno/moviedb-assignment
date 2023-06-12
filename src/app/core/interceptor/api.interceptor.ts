@@ -23,11 +23,7 @@ export class ApiKeyInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     let newParams = new HttpParams({ fromString: req.params.toString() });
     let baseUrl = this.baseURL;
-    if (
-      req.url.indexOf('i18n') !== -1 ||
-      req.url.indexOf('http://') === 0 ||
-      req.url.indexOf('https://') === 0
-    ) {
+    if (req.url.indexOf('http://') === 0 || req.url.indexOf('https://') === 0) {
       baseUrl = '';
     }
 
