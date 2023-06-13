@@ -33,10 +33,7 @@ export default class SignInComponent {
         Validators.required,
         Validators.email,
       ]),
-      password: new FormControl('123456', [
-        Validators.required,
-        Validators.minLength(6),
-      ]),
+      password: new FormControl('123456', Validators.required),
     });
     this.registerForm = new FormGroup({
       name: new FormControl('', Validators.required),
@@ -51,7 +48,7 @@ export default class SignInComponent {
   onSignIn() {
     this.showAlert = false;
     if (this.signInForm.invalid) {
-      this.signInForm.markAsTouched();
+      this.signInForm.markAllAsTouched();
       return;
     }
     this._authSerice.signIn(this.signInForm.value).subscribe(
@@ -60,7 +57,7 @@ export default class SignInComponent {
         this._router.navigate(['/home']);
       },
       (error) => {
-        this.showAlert = true;
+        this.showAlertFor3Sec();
         this.alert = { type: 'error', message: error };
       }
     );
@@ -68,21 +65,31 @@ export default class SignInComponent {
   onRegister() {
     this.showAlert = false;
     if (this.registerForm.invalid) {
-      this.registerForm.markAsTouched();
-      this.registerForm.markAsDirty();
+      this.registerForm.markAllAsTouched();
       return;
     }
     this._authSerice.signUp(this.registerForm.value).subscribe(
       (resp) => {
-        console.log('registerresp', resp);
         // this._router.navigate(['/home']);
+
         this.onToggleForm();
+        this.alert = {
+          type: 'success',
+          message: 'Account registered succesfully',
+        };
+        this.showAlertFor3Sec();
       },
       (error) => {
-        this.showAlert = true;
+        this.showAlertFor3Sec();
         this.alert = { type: 'error', message: error };
       }
     );
+  }
+  showAlertFor3Sec() {
+    this.showAlert = true;
+    setTimeout(() => {
+      this.showAlert = false;
+    }, 3000);
   }
 
   onToggleForm() {

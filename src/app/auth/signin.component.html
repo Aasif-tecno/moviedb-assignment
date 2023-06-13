@@ -1,6 +1,6 @@
 <div class="login-page">
   <div class="form">
-    <h2 class="section-title">Sign In</h2>
+    <h2 class="section-title">Sign {{ showLoginForm ? "In" : "Up" }}</h2>
     <div class="alert" [class]="alert.type" *ngIf="showAlert">
       {{ alert.message }}
     </div>
@@ -103,7 +103,7 @@
       </p>
       <p
         class="error-message"
-        *ngIf="registerForm.get('password')?.hasError('minLength')"
+        *ngIf="registerForm.get('password')?.hasError('minlength')"
       >
         Password should be minimum 6 characters
       </p>
