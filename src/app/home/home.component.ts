@@ -29,7 +29,7 @@ import {
     <app-nav />
     <section class="movie-section">
       <header>
-        <h2 class="section-title">Populer Movies</h2>
+        <h2 class="section-title">Popular Movies</h2>
         <div class="filter-form">
           <input
             (input)="filterByQuery(query.value)"
